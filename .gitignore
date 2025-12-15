@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+*.db
+*.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# data files
+/data/raw/*.csv
+/data/real-estate/*.json
+/data/opendata/
+
+# serena
+.serena/
