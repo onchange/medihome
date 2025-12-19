@@ -8,81 +8,82 @@ datasource db {
 }
 
 model MedicalFacility {
-  id                String   @id @default(cuid())
-  facilityType      String
-  name              String
-  postalCode        String
-  address           String
-  districtName      String
-  phoneNumber       String?
-  latitude          Float
-  longitude         Float
+  id           String       @id @default(cuid())
+  facilityType String
+  name         String
+  postalCode   String
+  address      String
+  districtName String
+  phoneNumber  String?
+  latitude     Float
+  longitude    Float
 
-  departments       Department[]
+  departments Department[]
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([districtName])
   @@index([facilityType])
 }
 
 model Department {
-  id                String   @id @default(cuid())
+  id                String          @id @default(cuid())
   facilityId        String
-  facility          MedicalFacility @relation(fields: [facilityId], references: [id])
+  facility          MedicalFacility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
   departmentName    String
   consultationHours String?
-  hasNightService   Boolean  @default(false)
-  hasWeekendService Boolean  @default(false)
-  hasHomeVisit      Boolean  @default(false)
+  hasNightService   Boolean         @default(false)
+  hasWeekendService Boolean         @default(false)
+  hasHomeVisit      Boolean         @default(false)
 
   @@index([departmentName])
   @@index([facilityId])
 }
 
 model RealEstateTransaction {
-  id                String   @id @default(cuid())
-  districtName      String
-  districtCode      String
+  id           String   @id @default(cuid())
+  districtName String
+  districtCode String
 
-  tradePrice        Int
-  propertyType      String
-  floorPlan         String?
-  area              Float
-  buildingYear      String?
-  structure         String?
+  tradePrice   Int
+  propertyType String
+  floorPlan    String?
+  area         Float
+  buildingYear String?
+  structure    String?
 
-  year              String
-  quarter           String
-  period            String
+  year    String
+  quarter String
+  period  String
 
-  createdAt         DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([districtName])
   @@index([propertyType])
   @@index([year, quarter])
+  @@index([districtName, propertyType])
 }
 
 model DistrictMedicalScore {
-  id                String   @id @default(cuid())
-  districtName      String   @unique
+  id             String @id @default(cuid())
+  districtName   String @unique
 
-  childcareScore    Int
-  elderlyScore      Int
-  generalScore      Int
-  overallScore      Int
+  childcareScore Int
+  elderlyScore   Int
+  generalScore   Int
+  overallScore   Int
 
-  scoreDetails      String
+  scoreDetails String
 
-  hospitalCount     Int
-  clinicCount       Int
-  dentalCount       Int
-  pharmacyCount     Int
+  hospitalCount Int
+  clinicCount   Int
+  dentalCount   Int
+  pharmacyCount Int
 
-  calculatedAt      DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  calculatedAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([overallScore])
 }
