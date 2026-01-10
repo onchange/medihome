@@ -118,3 +118,16 @@ export function isValidDistrict(district: string): district is ValidDistrict {
 export function sanitizeDistrict(district: string): string {
   return district.replace(/[<>"'&]/g, '')
 }
+
+export interface MedicalFacility {
+  id: string
+  name: string
+  facilityType: string
+  latitude: number
+  longitude: number
+  districtName: string
+  address: string | null
+  phone: string | null
+  website: string | null
+  departments?: string[]
+}

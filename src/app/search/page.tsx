@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { RealEstateTransaction, sanitizeDistrict, isValidDistrict } from '@/types'
+import FacilityMapSection from '@/components/FacilityMapSection'
 
 interface MedicalFacility {
   id: string
@@ -217,6 +218,10 @@ export default async function SearchPage({
         </Link>
 
         <h1 className="text-3xl font-bold mb-8">{district}エリア</h1>
+
+        <div className="mb-8">
+          <FacilityMapSection district={district} />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
