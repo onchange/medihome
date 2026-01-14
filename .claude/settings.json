@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//private/var/folders/9b/wfpjqjfj03z34jgqmt81vplm0000gn/T/claude/-Users-onchange-dev-claude-medihome/tasks/**)"
+    ]
+  }
+}
