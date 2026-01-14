@@ -19,7 +19,8 @@
     "analyze:realestate": "tsx scripts/analyze-real-estate-data.ts",
     "import:medical": "tsx scripts/import-medical-facilities.ts",
     "import:realestate": "tsx scripts/import-real-estate-transactions.ts",
-    "calculate:scores": "tsx scripts/calculate-district-scores.ts"
+    "calculate:scores": "tsx scripts/calculate-district-scores.ts",
+    "migrate:postgres": "tsx scripts/migrate-to-postgres.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
