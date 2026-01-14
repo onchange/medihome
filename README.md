@@ -212,6 +212,25 @@ npm run dev
 - ✅ M3面接でデモ可能
 - ✅ ビルド成功
 
+## デプロイ
+
+Cloudflare Pagesへのデプロイ手順については、[DEPLOY.md](DEPLOY.md)を参照してください。
+
+### クイックスタート
+
+#### GitHub連携による自動デプロイ（推奨）
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com/)でPages > Create projectを選択
+2. GitHubリポジトリを連携
+3. ビルド設定:
+   - Framework: Next.js
+   - Build command: `npm run build`
+   - Build output: `.next`
+4. 環境変数を設定（`REINFOLIB_API_KEY`など）
+5. デプロイ実行
+
+詳細は[DEPLOY.md](DEPLOY.md)を参照してください。
+
 ## 次のステップ（Phase 2以降）
 
 Phase 1が完了し、基本機能が実装されました。今後の拡張可能性：
