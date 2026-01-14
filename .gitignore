@@ -43,7 +43,7 @@ next-env.d.ts
 # database
 *.db
 *.db-journal
-prisma/*.db
+# prisma/*.db  # Vercelデプロイ用に一時的にコメントアウト
 prisma/*.db-journal
 
 # data files
