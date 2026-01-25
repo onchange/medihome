@@ -19,10 +19,16 @@ export default function AttributionPage() {
           <dd className="ml-4">政府標準利用規約（第2.0版）/ CC BY 4.0互換</dd>
 
           <dt className="font-bold mt-4">データ取得日</dt>
-          <dd className="ml-4">2025年12月15日</dd>
+          <dd className="ml-4">2025年12月1日（厚労省オープンデータ公開日）</dd>
+
+          <dt className="font-bold mt-4">対象エリア</dt>
+          <dd className="ml-4">東京23区</dd>
 
           <dt className="font-bold mt-4">対象施設数</dt>
-          <dd className="ml-4">198施設（病院5、診療所73、歯科60、助産所2、薬局58）</dd>
+          <dd className="ml-4">20,927施設（病院393、診療所9,381、歯科6,400、薬局4,753）</dd>
+
+          <dt className="font-bold mt-4">診療科数</dt>
+          <dd className="ml-4">48,180件</dd>
 
           <dt className="font-bold mt-4">URL</dt>
           <dd className="ml-4">
@@ -39,32 +45,49 @@ export default function AttributionPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">不動産取引データ</h2>
+        <h2 className="text-2xl font-bold mb-4">地図データ</h2>
         <dl className="space-y-2">
           <dt className="font-bold">提供元</dt>
-          <dd className="ml-4">国土交通省 不動産情報ライブラリAPI</dd>
+          <dd className="ml-4">OpenStreetMap contributors</dd>
 
           <dt className="font-bold mt-4">ライセンス</dt>
-          <dd className="ml-4">政府標準利用規約（第2.0版）/ CC BY 4.0互換</dd>
-
-          <dt className="font-bold mt-4">データ取得日</dt>
-          <dd className="ml-4">2025年12月15日</dd>
-
-          <dt className="font-bold mt-4">対象期間</dt>
-          <dd className="ml-4">2024年度（第1〜4四半期）</dd>
-
-          <dt className="font-bold mt-4">取引件数</dt>
-          <dd className="ml-4">563件</dd>
+          <dd className="ml-4">Open Database License (ODbL)</dd>
 
           <dt className="font-bold mt-4">URL</dt>
           <dd className="ml-4">
             <a
-              href="https://www.reinfolib.mlit.go.jp/"
+              href="https://www.openstreetmap.org/copyright"
               className="text-blue-600 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              不動産情報ライブラリ
+              OpenStreetMap Copyright
+            </a>
+          </dd>
+        </dl>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">行政区域データ</h2>
+        <dl className="space-y-2">
+          <dt className="font-bold">提供元</dt>
+          <dd className="ml-4">国土交通省 国土数値情報（行政区域データ）</dd>
+
+          <dt className="font-bold mt-4">加工・変換</dt>
+          <dd className="ml-4">smartnews-smri/japan-topography</dd>
+
+          <dt className="font-bold mt-4">ライセンス</dt>
+          <dd className="ml-4">国土数値情報利用約款</dd>
+
+          <dt className="font-bold mt-4">URL</dt>
+          <dd className="ml-4">
+            <a
+              href="https://github.com/smartnews-smri/japan-topography"
+              className="text-blue-600 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              smartnews-smri/japan-topography
             </a>
           </dd>
         </dl>

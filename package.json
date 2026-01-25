@@ -11,16 +11,10 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "phase0:download": "tsx scripts/phase0-download-data.ts",
-    "phase0:import": "tsx scripts/phase0-import-raw.ts",
-    "phase0:analyze": "tsx scripts/phase0-analyze-data.ts",
-    "phase0:all": "npm run phase0:download && npm run phase0:import && npm run phase0:analyze",
-    "fetch:realestate": "tsx scripts/fetch-real-estate-data.ts",
-    "analyze:realestate": "tsx scripts/analyze-real-estate-data.ts",
-    "import:medical": "tsx scripts/import-medical-facilities.ts",
-    "import:realestate": "tsx scripts/import-real-estate-transactions.ts",
+    "fetch:mhlw": "tsx scripts/fetch-mhlw-opendata.ts",
+    "import:mhlw": "tsx scripts/import-mhlw-tokyo.ts",
     "calculate:scores": "tsx scripts/calculate-district-scores.ts",
-    "migrate:postgres": "tsx scripts/migrate-to-postgres.ts"
+    "setup:mhlw": "npm run fetch:mhlw && npm run import:mhlw && npm run calculate:scores"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",

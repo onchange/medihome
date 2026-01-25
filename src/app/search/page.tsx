@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
-import { RealEstateTransaction, sanitizeDistrict, isValidDistrict } from '@/types'
+import { getScoreColor } from '@/lib/score-utils'
+import { sanitizeDistrict, isValidDistrict } from '@/types'
 import FacilityMapSection from '@/components/FacilityMapSection'
 
 interface MedicalFacility {
@@ -53,24 +54,13 @@ interface DistrictData {
   } | null
   details: ScoreDetailsData | null
   facilities: MedicalFacility[]
-  realEstate: {
-    count: number
-    avgPrice: number
-    medianPrice: number
-    transactions: RealEstateTransaction[]
-  } | null
 }
 
 async function getDistrictData(districtName: string): Promise<DistrictData> {
   try {
-    const [score, transactions, facilities] = await Promise.all([
+    const [score, facilities] = await Promise.all([
       prisma.districtMedicalScore.findUnique({
         where: { districtName },
-      }),
-      prisma.realEstateTransaction.findMany({
-        where: { districtName },
-        orderBy: { tradePrice: 'asc' },
-        take: 50,
       }),
       prisma.medicalFacility.findMany({
         where: { districtName },
@@ -92,23 +82,10 @@ async function getDistrictData(districtName: string): Promise<DistrictData> {
       }
     }
 
-    let realEstate = null
-    if (transactions.length > 0) {
-      const prices = transactions.map((t) => t.tradePrice)
-      const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length)
-      const medianPrice = prices[Math.floor(prices.length / 2)]
-      realEstate = {
-        count: transactions.length,
-        avgPrice,
-        medianPrice,
-        transactions: transactions as RealEstateTransaction[],
-      }
-    }
-
-    return { score, details, facilities, realEstate }
+    return { score, details, facilities }
   } catch (error) {
     console.error('Error fetching district data:', error)
-    return { score: null, details: null, facilities: [], realEstate: null }
+    return { score: null, details: null, facilities: [] }
   }
 }
 
@@ -127,13 +104,13 @@ function getGoogleMapsUrl(facility: MedicalFacility): string {
 function getFacilityTypeLabel(type: string): string {
   switch (type) {
     case '病院':
-      return '🏥 病院'
+      return '病院'
     case '診療所':
-      return '🩺 診療所'
+      return '診療所'
     case '歯科':
-      return '🦷 歯科'
+      return '歯科'
     case '薬局':
-      return '💊 薬局'
+      return '薬局'
     default:
       return type
   }
@@ -193,7 +170,7 @@ export default async function SearchPage({
     )
   }
 
-  const { score, details, facilities, realEstate } = await getDistrictData(district)
+  const { score, details, facilities } = await getDistrictData(district)
 
   if (!score) {
     return (
@@ -212,13 +189,17 @@ export default async function SearchPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-6xl mx-auto p-8">
-        <Link href="/" className="text-blue-600 hover:underline mb-4 inline-block">
-          ← トップページに戻る
-        </Link>
+      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <Link href="/" className="text-blue-100 hover:text-white mb-2 inline-block">
+            ← トップページに戻る
+          </Link>
+          <h1 className="text-3xl font-bold">{district}エリア</h1>
+          <p className="text-blue-100">医療アクセス詳細</p>
+        </div>
+      </header>
 
-        <h1 className="text-3xl font-bold mb-8">{district}エリア</h1>
-
+      <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <FacilityMapSection district={district} />
         </div>
@@ -232,7 +213,7 @@ export default async function SearchPage({
                 <div className="flex items-center justify-between p-4 bg-blue-50 rounded">
                   <span className="font-bold">総合スコア</span>
                   <span
-                    className="text-3xl font-bold text-blue-600"
+                    className={`text-3xl font-bold ${getScoreColor(score.overallScore)}`}
                     role="status"
                     aria-label={`総合スコア: ${score.overallScore}点`}
                   >
@@ -340,32 +321,34 @@ export default async function SearchPage({
             <section className="bg-white rounded-lg shadow p-6" aria-labelledby="facility-heading">
               <h3 id="facility-heading" className="text-xl font-bold mb-4">施設数</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-red-50 border-red-200">
                   <div className="text-sm text-gray-600">病院</div>
                   <div className="text-2xl font-bold">{score.hospitalCount}件</div>
                 </div>
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-blue-50 border-blue-200">
                   <div className="text-sm text-gray-600">診療所</div>
                   <div className="text-2xl font-bold">{score.clinicCount}件</div>
                 </div>
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-green-50 border-green-200">
                   <div className="text-sm text-gray-600">歯科</div>
                   <div className="text-2xl font-bold">{score.dentalCount}件</div>
                 </div>
-                <div className="p-3 border rounded">
+                <div className="p-3 border rounded bg-yellow-50 border-yellow-200">
                   <div className="text-sm text-gray-600">薬局</div>
                   <div className="text-2xl font-bold">{score.pharmacyCount}件</div>
                 </div>
               </div>
             </section>
+          </div>
 
+          <div className="space-y-6">
             {facilities.length > 0 && (
               <section className="bg-white rounded-lg shadow p-6" aria-labelledby="facilities-list-heading">
                 <h3 id="facilities-list-heading" className="text-xl font-bold mb-4">医療施設一覧</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   施設名をクリックするとGoogle Mapsで場所を確認できます
                 </p>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <div className="space-y-3 max-h-[600px] overflow-y-auto">
                   {facilities.map((facility) => (
                     <div
                       key={facility.id}
@@ -389,7 +372,7 @@ export default async function SearchPage({
                             </div>
                           )}
                         </div>
-                        <span className="text-xs whitespace-nowrap">
+                        <span className="text-xs whitespace-nowrap bg-white px-2 py-1 rounded border">
                           {getFacilityTypeLabel(facility.facilityType)}
                         </span>
                       </div>
@@ -399,63 +382,14 @@ export default async function SearchPage({
               </section>
             )}
           </div>
-
-          <div className="space-y-6">
-            {realEstate && realEstate.count > 0 ? (
-              <>
-                <section className="bg-white rounded-lg shadow p-6" aria-labelledby="realestate-heading">
-                  <h2 id="realestate-heading" className="text-2xl font-bold mb-4">不動産相場（2024年）</h2>
-
-                  <div className="space-y-4">
-                    <div className="p-4 bg-green-50 rounded">
-                      <div className="text-sm text-gray-600 mb-1">取引件数</div>
-                      <div className="text-2xl font-bold text-green-600">{realEstate.count}件</div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between p-3 border rounded">
-                        <span>平均価格</span>
-                        <span className="font-bold text-lg">{(realEstate.avgPrice / 10000).toFixed(0)}万円</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 border rounded">
-                        <span>中央値</span>
-                        <span className="font-bold text-lg">{(realEstate.medianPrice / 10000).toFixed(0)}万円</span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="bg-white rounded-lg shadow p-6" aria-labelledby="transactions-heading">
-                  <h3 id="transactions-heading" className="text-xl font-bold mb-4">最近の取引例（最大10件）</h3>
-                  <ul className="space-y-2">
-                    {realEstate.transactions.slice(0, 10).map((tx, idx) => (
-                      <li key={tx.id || idx} className="p-3 border rounded text-sm">
-                        <div className="flex justify-between mb-1">
-                          <span className="font-bold">{tx.propertyType}</span>
-                          <span className="font-bold text-blue-600">{(tx.tradePrice / 10000).toFixed(0)}万円</span>
-                        </div>
-                        <div className="text-gray-600">
-                          {tx.floorPlan && <span>{tx.floorPlan} / </span>}
-                          {tx.area}㎡
-                          {tx.buildingYear && <span> / {tx.buildingYear}</span>}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </>
-            ) : (
-              <section className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-2xl font-bold mb-4">不動産相場</h2>
-                <p className="text-gray-600">この地区の不動産取引データはありません</p>
-              </section>
-            )}
-          </div>
         </div>
 
-        <footer className="mt-8 text-sm text-gray-500 space-y-2">
-          <p>※ スコアは施設の数と距離を基に自動計算しています。医療サービスの質を保証するものではありません。</p>
+        <footer className="mt-8 text-sm text-gray-500 space-y-2 border-t pt-8">
+          <p>スコアは面積あたりの施設密度を基に自動計算しています。医療サービスの質を保証するものではありません。</p>
           <nav className="space-x-4" aria-label="法的情報">
+            <Link href="/legal/scoring" className="text-blue-600 hover:underline">
+              スコア計算ロジック
+            </Link>
             <Link href="/legal/disclaimer" className="text-blue-600 hover:underline">
               免責事項
             </Link>

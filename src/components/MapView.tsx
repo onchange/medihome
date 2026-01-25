@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { useEffect, useMemo, useState } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { MedicalFacility } from '@/types'
@@ -11,21 +11,27 @@ interface MapViewProps {
   center?: [number, number]
   zoom?: number
   className?: string
+  districtName?: string
 }
+
+interface TokyoGeoJSON {
+  type: 'FeatureCollection'
+  features: GeoJSON.Feature[]
+}
+
+const GEOJSON_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_13_210101.json'
 
 const FACILITY_TYPE_COLORS: Record<string, string> = {
   '病院': '#EF4444',
   '診療所': '#3B82F6',
-  '歯科診療所': '#10B981',
-  '助産所': '#F59E0B',
+  '歯科': '#10B981',
   '薬局': '#8B5CF6',
 }
 
 const FACILITY_TYPE_LABELS: Record<string, string> = {
   '病院': '病院',
   '診療所': '診療所',
-  '歯科診療所': '歯科',
-  '助産所': '助産所',
+  '歯科': '歯科',
   '薬局': '薬局',
 }
 
@@ -66,7 +72,40 @@ function FitBounds({ facilities }: { facilities: MedicalFacility[] }) {
   return null
 }
 
-export default function MapView({ facilities, center, zoom = 13, className = '' }: MapViewProps) {
+function DistrictBoundary({ districtName }: { districtName: string }) {
+  const [geoData, setGeoData] = useState<GeoJSON.Feature | null>(null)
+
+  useEffect(() => {
+    fetch(GEOJSON_URL)
+      .then(res => res.json())
+      .then((data: TokyoGeoJSON) => {
+        const feature = data.features.find(
+          f => (f.properties as { N03_004?: string })?.N03_004 === districtName
+        )
+        if (feature) {
+          setGeoData(feature)
+        }
+      })
+      .catch(err => console.error('Failed to load district boundary:', err))
+  }, [districtName])
+
+  if (!geoData) return null
+
+  return (
+    <GeoJSON
+      data={geoData}
+      style={{
+        fillColor: '#3b82f6',
+        fillOpacity: 0.1,
+        color: '#1d4ed8',
+        weight: 3,
+        dashArray: '5, 5',
+      }}
+    />
+  )
+}
+
+export default function MapView({ facilities, center, zoom = 13, className = '', districtName }: MapViewProps) {
   const defaultCenter: [number, number] = center || [35.6544, 139.9007]
 
   const markers = useMemo(
@@ -144,6 +183,7 @@ export default function MapView({ facilities, center, zoom = 13, className = '' 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {districtName && <DistrictBoundary districtName={districtName} />}
         {markers}
         {!center && <FitBounds facilities={facilities} />}
       </MapContainer>

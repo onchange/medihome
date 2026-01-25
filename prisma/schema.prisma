@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model MedicalFacility {
@@ -41,30 +40,6 @@ model Department {
 
   @@index([departmentName])
   @@index([facilityId])
-}
-
-model RealEstateTransaction {
-  id           String   @id @default(cuid())
-  districtName String
-  districtCode String
-
-  tradePrice   Int
-  propertyType String
-  floorPlan    String?
-  area         Float
-  buildingYear String?
-  structure    String?
-
-  year    String
-  quarter String
-  period  String
-
-  createdAt DateTime @default(now())
-
-  @@index([districtName])
-  @@index([propertyType])
-  @@index([year, quarter])
-  @@index([districtName, propertyType])
 }
 
 model DistrictMedicalScore {

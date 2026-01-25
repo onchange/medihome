@@ -68,7 +68,7 @@ export default function FacilityMapSection({ district }: FacilityMapSectionProps
       <p className="text-sm text-gray-600 mb-4">
         マーカーをクリックすると施設の詳細が表示されます（全{facilities.length}件）
       </p>
-      <MapView facilities={facilities} className="h-[500px]" />
+      <MapView facilities={facilities} className="h-[500px]" districtName={district} />
     </section>
   )
 }

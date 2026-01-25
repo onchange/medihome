@@ -12,17 +12,9 @@ export default function DisclaimerPage() {
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4">医療アクセススコアについて</h2>
         <ul className="list-disc pl-6 space-y-2">
-          <li>スコアは施設の数と距離を基に自動計算しており、医療サービスの質を保証するものではありません</li>
+          <li>スコアは施設の数と種類を基に自動計算しており、医療サービスの質を保証するものではありません</li>
           <li>実際の医療機関選択は、ご自身の判断と医師への相談を優先してください</li>
           <li>緊急時は迷わず119番通報してください</li>
-        </ul>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">不動産価格情報について</h2>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>価格は過去の取引実績であり、現在の市場価格を保証するものではありません</li>
-          <li>物件購入の際は不動産業者に最新情報をご確認ください</li>
         </ul>
       </section>
 

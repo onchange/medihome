@@ -35,44 +35,24 @@ export interface ChildcareScoreDetails {
   pediatricsCount: number
   hasNightPediatrics: boolean
   maternityCount: number
+  pharmacyCount: number
   hasNearbyHospital: boolean
 }
 
 export interface ElderlyScoreDetails {
   cardiologyCount: number
   orthopedicsCount: number
-  rehabilitationCount: number
+  rehabCount: number
+  homeVisitCount: number
   hasNearbyHospital: boolean
 }
 
 export interface GeneralScoreDetails {
   internalMedicineCount: number
-  departmentDiversity: number
+  departmentVariety: number
   dentalCount: number
   pharmacyCount: number
-}
-
-export interface RealEstateTransaction {
-  id: string
-  districtName: string
-  districtCode: string
-  tradePrice: number
-  propertyType: string
-  floorPlan: string | null
-  area: number
-  buildingYear: string | null
-  structure: string | null
-  year: string
-  quarter: string
-  period: string
-}
-
-export interface RealEstateData {
-  count: number
-  avgPrice: number
-  medianPrice: number
-  transactions: RealEstateTransaction[]
-  totalCount?: number
+  hasNearbyHospital: boolean
 }
 
 export interface ScoreResponse {
@@ -86,27 +66,29 @@ export interface ApiError {
 }
 
 export const VALID_DISTRICTS = [
-  '猫実',
-  '北栄',
-  '当代島',
-  '堀江',
-  '富士見',
-  '東野',
-  '弁天',
-  '海楽',
-  '入船',
-  '美浜',
-  '今川',
-  '富岡',
-  '東西',
-  '日の出',
-  '明海',
-  '高洲',
-  '鉄鋼通り',
-  '港',
-  '千鳥',
-  '舞浜',
-  '浦安駅前',
+  '千代田区',
+  '中央区',
+  '港区',
+  '新宿区',
+  '文京区',
+  '台東区',
+  '墨田区',
+  '江東区',
+  '品川区',
+  '目黒区',
+  '大田区',
+  '世田谷区',
+  '渋谷区',
+  '中野区',
+  '杉並区',
+  '豊島区',
+  '北区',
+  '荒川区',
+  '板橋区',
+  '練馬区',
+  '足立区',
+  '葛飾区',
+  '江戸川区',
 ] as const
 
 export type ValidDistrict = typeof VALID_DISTRICTS[number]

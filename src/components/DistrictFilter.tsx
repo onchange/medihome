@@ -70,7 +70,7 @@ export default function DistrictFilter({ districts }: { districts: District[] })
   const minScore = Math.min(...districts.map((d) => getScoreByFilter(d, activeFilter)))
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-8">
+    <div>
       <h2 className="text-2xl font-bold mb-4">地区を選択</h2>
 
       <div className="mb-6">
@@ -109,7 +109,7 @@ export default function DistrictFilter({ districts }: { districts: District[] })
           {activeFilter === 'general' && '内科の数、診療科の多様性、歯科・薬局の充実度など'}
         </p>
         <p className="text-gray-500 mt-1">
-          浦安市内での相対評価：最高 {maxScore}点 / 最低 {minScore}点
+          東京23区内での相対評価：最高 {maxScore}点 / 最低 {minScore}点
         </p>
       </div>
 
